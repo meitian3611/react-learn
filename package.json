@@ -11,6 +11,7 @@
     "json-server": "json-server --watch db.json --port 3003"
   },
   "dependencies": {
+    "ahooks": "^3.9.7",
     "axios": "^1.18.1",
     "dayjs": "^1.11.21",
     "pnpm": "^11.13.0",

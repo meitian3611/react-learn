@@ -7,7 +7,7 @@
 - **框架**: React 19 + TypeScript
 - **构建工具**: Vite
 - **路由**: React Router v8
-- **HTTP 请求**: Axios（封装统一实例，设置 baseURL `/api`）
+- **HTTP 请求**: Axios（封装统一实例，设置 baseURL `/api`） + ahooks useRequest
 - **Mock 数据**: json-server（`db.json`）
 - **日期处理**: dayjs
 - **包管理**: pnpm
@@ -88,9 +88,9 @@ src/
 
 ## 封装说明
 
-| 文件              | 说明                                            |
-| ----------------- | ----------------------------------------------- |
-| `utils/request.ts`  | 创建 axios 实例，统一 baseURL 和响应拦截        |
-| `utils/api.ts`      | 封装业务接口（如 `getComments`），支持传参      |
-| `components/`       | 公共 UI 组件，如评论项 `Comment-Item`            |
-| `pages/Home/`       | 首页内自定义 Hook：`useCommentList`、`useCommentPush` |
+| 文件              | 说明                                              |
+| ----------------- | ------------------------------------------------- |
+| `utils/request.ts`  | 创建 axios 实例，统一 baseURL 和响应拦截          |
+| `utils/api.ts`      | 封装业务接口（如 `getComments`），支持传参        |
+| `components/`       | 公共 UI 组件，如评论项 `Comment-Item`              |
+| `pages/Home/`       | 使用 ahooks `useRequest` 自动请求数据 + `useCommentPush` 自定义 Hook 发布评论 |

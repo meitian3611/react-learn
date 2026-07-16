@@ -1,6 +1,7 @@
 import "./index.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
+import { useRequest } from "ahooks";
 import { getComments } from "@/utils/api";
 import CommentItem from "@/components/Comment-Item";
 
@@ -31,21 +32,6 @@ function sortComments(comments: any[], type: string) {
   );
 }
 
-// 封装自定义hook 请求接口数据
-function useCommentList() {
-  const [comments, setComments] = useState([]);
-
-  useEffect(() => {
-    getComments().then((res: any) => {
-      setComments(res);
-    });
-  }, []);
-  return {
-    comments,
-    setComments,
-  };
-}
-
 // 封装自定义hook 发布评论
 function useCommentPush(
   comments: any[],
@@ -73,7 +59,7 @@ function useCommentPush(
 }
 
 export default function Home() {
-  const { comments, setComments } = useCommentList(); // 使用自定义hook
+  const { data: comments = [], mutate: setComments } = useRequest(getComments);
   const [tabName, setTabName] = useState("new");
   const inputRef = useRef(null);
   const { inputValue, setInputValue, handlePush } = useCommentPush(
@@ -89,7 +75,7 @@ export default function Home() {
 
   // 删除评论 - 函数式删除 用于获取最新状态
   const handleDel = (id: number) => {
-    setComments((prev) => prev.filter((item) => item.id !== id));
+    setComments((prev: any[]) => prev.filter((item) => item.id !== id));
   };
   // 切换tab
   const handleTabChange = (value: string) => {
