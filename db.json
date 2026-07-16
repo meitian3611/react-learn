@@ -1,0 +1,52 @@
+{
+  "getList": [
+    {
+      "id": 1,
+      "username": "jack",
+      "text": "你好啊",
+      "time": "2023-11-11",
+      "like": 100,
+      "avatar": "https://picsum.photos/60"
+    },
+    {
+      "id": 2,
+      "username": "mmt",
+      "text": "这是我的消息信息",
+      "time": "2025-06-06",
+      "like": 26,
+      "avatar": "https://picsum.photos/60"
+    },
+    {
+      "id": 3,
+      "username": "王林",
+      "text": "我是王林",
+      "time": "2026-03-20",
+      "like": 33,
+      "avatar": "https://picsum.photos/60"
+    },
+    {
+      "id": 4,
+      "username": "韩立",
+      "text": "在下历飞宇",
+      "time": "2024-1-21",
+      "like": 7,
+      "avatar": "https://picsum.photos/60"
+    },
+    {
+      "id": 5,
+      "username": "萧炎",
+      "text": "侥幸而已",
+      "time": "2023-05-01",
+      "like": 96,
+      "avatar": "https://picsum.photos/60"
+    },
+    {
+      "id": 6,
+      "username": "林动",
+      "text": "一指动乾坤",
+      "time": "2022-10-22",
+      "like": 367,
+      "avatar": "https://picsum.photos/60"
+    }
+  ]
+}

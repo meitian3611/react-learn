@@ -1,0 +1,140 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.comment-body {
+  width: 900px;
+  margin: 40px auto;
+}
+
+/* ======================== */
+/* 顶部 */
+/* ======================== */
+
+.btn-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  margin-right: 40px;
+}
+
+.title h2 {
+  font-size: 28px;
+}
+
+.title span {
+  margin-left: 6px;
+  color: #999;
+}
+
+.tabs {
+  display: flex;
+  gap: 20px;
+}
+
+.tabs span {
+  cursor: pointer;
+  color: #666;
+}
+
+.tabs .active {
+  color: #000;
+  font-weight: bold;
+}
+
+/* ======================== */
+/* 输入框 */
+/* ======================== */
+
+.comment-input {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.comment-input .avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.comment-input input {
+  flex: 1;
+  height: 48px;
+  padding: 0 16px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 6px;
+  outline: none;
+  font-size: 14px;
+}
+
+.comment-input button {
+  width: 90px;
+  height: 48px;
+  border: none;
+  border-radius: 6px;
+  background: #00a1ff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.comment-input button:hover {
+  background: #33b4ff;
+}
+
+/* ======================== */
+/* 评论列表 */
+/* ======================== */
+
+.comment-item {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid #eee;
+}
+
+.comment-item .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.content {
+  flex: 1;
+}
+
+.username {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.text {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #222;
+}
+
+.footer {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  color: #999;
+}
+
+.delete {
+  cursor: pointer;
+}
+
+.delete:hover {
+  color: red;
+}
