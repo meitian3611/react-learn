@@ -1,7 +1,8 @@
-import "./index.css";
+import "./style.css";
 import { useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { useRequest } from "ahooks";
+
 import { getComments } from "@/utils/api";
 import CommentItem from "@/components/Comment-Item";
 
@@ -59,7 +60,9 @@ function useCommentPush(
 }
 
 export default function Home() {
-  const { data: comments = [], mutate: setComments } = useRequest(getComments);
+  const { data: comments = [], mutate: setComments } = useRequest(() =>
+    getComments(),
+  );
   const [tabName, setTabName] = useState("new");
   const inputRef = useRef(null);
   const { inputValue, setInputValue, handlePush } = useCommentPush(

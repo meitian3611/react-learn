@@ -11,12 +11,14 @@
     "json-server": "json-server --watch db.json --port 3003"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.12.0",
     "ahooks": "^3.9.7",
     "axios": "^1.18.1",
     "dayjs": "^1.11.21",
     "pnpm": "^11.13.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-redux": "^9.3.0",
     "react-router": "^8.2.0"
   },
   "devDependencies": {
