@@ -2,6 +2,7 @@ import "./style.css";
 import { useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { useRequest } from "ahooks";
+import { useSearchParams, useLocation } from "react-router-dom";
 
 import { getComments } from "@/utils/api";
 import CommentItem from "@/components/Comment-Item";
@@ -60,6 +61,10 @@ function useCommentPush(
 }
 
 export default function Home() {
+  const [searchParams] = useSearchParams(); // 获取url参数
+  const { search } = useLocation(); // 获取所有的url
+  console.log(searchParams.get("id"), search);
+
   const { data: comments = [], mutate: setComments } = useRequest(() =>
     getComments(),
   );

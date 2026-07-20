@@ -3,16 +3,24 @@ import type { RootState } from "@/store";
 import { increment, decrement, addToNum } from "@/store/modules/counterStore";
 import { featchChannelList } from "@/store/modules/channelStore";
 import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 // redux的使用练习
 export default function List() {
   const { count } = useSelector((state: RootState) => state.counter);
   const { channelList } = useSelector((state: RootState) => state.channel);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(featchChannelList()); // 异步请求
   }, [dispatch]);
+
+  // 设置url参数
+  const params = new URLSearchParams({
+    id: "100",
+    name: "Tom",
+  });
 
   return (
     <div>
@@ -35,6 +43,32 @@ export default function List() {
             );
           })}
         </div>
+      </div>
+
+      <div>
+        <p>---路由跳转---</p>
+        <button onClick={() => navigate("/home")}>跳转到首页 </button>
+        ---
+        <button
+          onClick={() =>
+            navigate(
+              {
+                pathname: "/home",
+                search: `?text=aaa&${params.toString()}`, // 设置url参数
+              },
+              { replace: true }, // 替换当前url, 不添加到历史记录, 建议登录时使用, 默认false
+            )
+          }
+        >
+          跳转到首页 - 指定参数
+        </button>
+        ---
+        <button onClick={() => navigate("/list/c1")}>跳转到子路由</button>
+      </div>
+
+      <div>
+        <p>---嵌套的子路由---</p>
+        子路由: <Outlet />
       </div>
     </div>
   );
