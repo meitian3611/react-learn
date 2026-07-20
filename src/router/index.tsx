@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
 import Home from "@/pages/Home";
+import Study from "@/pages/Study";
 import Page404 from "@/pages/page404";
 
 // 封装懒加载组件 - V6 路由
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
         element: lazyLoad(() => import("@/pages/List/c1")), // V6 路由版本的懒加载
       },
     ],
+  },
+  {
+    path: "/study",
+    element: <Study />,
   },
   {
     path: "*", // 写在末尾 -  路由都没匹配到的情况
