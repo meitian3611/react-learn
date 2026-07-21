@@ -1,6 +1,7 @@
 import "./style.css";
 import { useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
+import classNames from "classnames";
 import { useRequest } from "ahooks";
 import { useSearchParams, useLocation } from "react-router-dom";
 
@@ -105,7 +106,9 @@ export default function Home() {
             return (
               <span
                 key={item.value}
-                className={tabName === item.value ? "active" : ""}
+                className={classNames("tabs123", {
+                  active: tabName === item.value, // 推荐使用classNames库
+                })}
                 onClick={() => handleTabChange(item.value)}
               >
                 {item.label}
