@@ -11,19 +11,49 @@
 > 3. 生成新的 Virtual DOM
 > 4. 对比新旧 DOM，更新视图
 
-## 2. useMemo
+## 2. 缓存相关 Hooks
 
-- `useMemo` 是一个 React Hook，用于缓存计算结果。和Vue的`computed`类似。
-- `useMemo` 的第一个参数是一个函数，第二个参数是一个依赖数组。
-- 当依赖数组中的依赖项发生变化时，`useMemo` 会重新计算函数。
+三个 API 都用于避免不必要的重复计算/渲染，核心思路是**依赖不变则返回上一次缓存结果**。
 
-```js
-const displayComments = useMemo(() => {
+### 2.1 useMemo —— 缓存计算结果
+
+类似 Vue 的 `computed`，区别在于 React 需要**手动声明依赖**（Vue 基于 Proxy 自动追踪）。
+
+```ts
+const sortedList = useMemo(() => {
   return sortComments(comments, tabName);
-}, [comments, tabName]); // 依赖comments和tabName 发生变化时重新触发事件
+}, [comments, tabName]); // 仅当依赖变化时重新计算
 ```
 
-> 本质上，`useMemo` 是一个缓存函数，用于缓存计算结果。`useMemo`需要手动传入依赖数组，而 `computed` 是自动的, 因为底层是 Proxy 响应式的.
+### 2.2 React.memo —— 缓存组件
+
+高阶组件，props 不变时跳过子组件渲染。**只做浅比较**，对象/数组/函数 props 每次渲染引用都会变，需配合 `useMemo` / `useCallback`。
+
+```tsx
+const MemoChild = memo(({ value }: { value: number }) => {
+  return <div>{value}</div>;
+});
+```
+
+使用前提：子组件渲染开销大 且 props 不常变。简单组件滥用反而增加比较开销。
+
+### 2.3 useCallback —— 缓存函数引用
+
+`useCallback(fn, deps)` 等价于 `useMemo(() => fn, deps)` —— 依赖不变时返回同一个函数引用。主要配合 `React.memo` 使用，避免函数 props 引用变化导致 memo 失效；也用于 `useEffect` 的依赖项防止死循环。
+
+```tsx
+// 不用 useCallback：每次渲染 handleClick 都是新函数 → memo 失效
+const handleClick = useCallback(() => setCount((c) => c + 1), []);
+// ✅ 空依赖：函数永远不变；用 state => state 避免 stale closure
+
+<MemoChild onClick={handleClick} />;
+```
+
+|          | useMemo        | React.memo     | useCallback          |
+| -------- | -------------- | -------------- | -------------------- |
+| 缓存目标 | 计算结果（值） | 整个组件       | 函数引用             |
+| 类型     | Hook           | HOC            | Hook                 |
+| 典型场景 | 昂贵计算       | 子组件跳过渲染 | 传给 memo 组件的回调 |
 
 ## 3. useEffect
 
@@ -302,3 +332,89 @@ const router = createBrowserRouter([
 
 - `createBrowserRouter` 是 v6.4 新增的 Data Router API，支持路由级 `loader`、`errorElement` 等高级特性。
 - 旧方式 `BrowserRouter` + `Routes` + `Route` 仍可用，但新项目推荐 `createBrowserRouter`。
+
+## 7. Zustand 状态管理
+
+- 轻量级状态管理，无需 Provider / Reducer / Action Creator。通过 `create` 创建 Hook，组件直接使用。
+- `create<Store>()(fn)` 需要两次调用：第一次传类型，第二次传初始化函数（保证 TS 类型推断）。
+
+### 基础用法
+
+```ts
+// 定义 store
+import { create } from "zustand";
+
+type Store = { count: number; inc: () => void };
+
+const useStore = create<Store>()((set) => ({
+  count: 0,
+  inc: () => set((state) => ({ count: state.count + 1 })),
+}));
+// set 两种写法
+set({ count: 100 }); // 直接覆盖
+set((state) => ({ count: state.count + 1 })); // 基于旧 state 计算
+```
+
+```tsx
+// 组件中使用
+const { count, inc } = useStore(); // 订阅整个 store
+const count = useStore((state) => state.count); // selector：只订阅 count，避免不必要渲染
+```
+
+### 组件外读写
+
+```ts
+useStore.getState();      // 获取快照（不订阅）
+useStore.setState({...}); // 更新状态
+const unsub = useStore.subscribe((state) => {...}); // 订阅变化，返回取消函数
+```
+
+### 分模块（Slice 模式）
+
+用 `StateCreator` 按功能拆分模块，在 `create` 中组合。`StateCreator<模块State>` 为最简写法。
+
+**模块文件**（`zustandModules/test_1.ts`）：
+
+```ts
+import type { StateCreator } from "zustand";
+
+export interface Test1Slice {
+  countIndex: number;
+  inc: () => void;
+}
+
+const createTest1Slice: StateCreator<Test1Slice> = (set) => ({
+  countIndex: 0,
+  inc: () => set((state) => ({ countIndex: state.countIndex + 1 })),
+});
+
+export default createTest1Slice;
+```
+
+**组合入口**（`zustand.ts`）：
+
+```ts
+import { create } from "zustand";
+import createTest1Slice, { type Test1Slice } from "./zustandModules/test_1";
+
+export type Store = Test1Slice; // 多模块: Test1Slice & Test2Slice & ...
+
+const useStore = create<Store>()((...args) => ({
+  ...createTest1Slice(...args), // (...args) 即 (set, get, api)，展开共享给各模块
+}));
+
+export default useStore;
+```
+
+**跨模块访问**：需要 `get()` 读取其他模块时，声明第四个泛型为完整 `Store`：
+
+```ts
+const createTest2Slice: StateCreator<Test2Slice, [], [], Store> = (
+  set,
+  get,
+) => ({
+  doubleCount: () => get().countIndex * 2, // 跨模块读取 Test1Slice
+});
+```
+
+**添加新模块**：新建模块文件 → import 并展开到 `create` → `Store` 类型 `&` 连接。

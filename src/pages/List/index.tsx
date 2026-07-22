@@ -2,9 +2,16 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@/store";
 import { increment, decrement, addToNum } from "@/store/modules/counterStore";
 import { featchChannelList } from "@/store/modules/channelStore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import useStore from "@/store/zustand";
+
+// memo的使用练习 - 子组件 props没有变化 不重新渲染
+const MemoComponent = memo(({ value }: { value: any }) => {
+  console.log("子组件被重新渲染了");
+  return <div>memo + {value}</div>;
+});
 
 // redux的使用练习
 export default function List() {
@@ -14,6 +21,11 @@ export default function List() {
   const navigate = useNavigate();
 
   const [curDate, setCurDate] = useState(dayjs().format("YYYY-MM-DD HH:mm:ss"));
+  const [countValue, setCountValue] = useState(1);
+
+  // const { countIndex, inc } = useStore(); // zustand的使用
+  const countIndex = useStore((state) => state.countIndex); // zustand的使用 单独订阅 性能最好 推荐
+  const inc = useStore((state) => state.inc);
 
   useEffect(() => {
     dispatch(featchChannelList()); // 异步请求
@@ -83,6 +95,19 @@ export default function List() {
         <button onClick={changeDate}>改变日期</button>
       </div>
       <div>{curDate}</div>
+
+      <div>
+        <p>---memo---</p>
+        <button onClick={() => setCountValue(countValue + 1)}>
+          点击更新子组件props
+        </button>
+        <MemoComponent value={countValue} />
+      </div>
+
+      <div>
+        <p>---zustand---</p>
+        {countIndex} - <button onClick={inc}>使用zustand 事件</button>
+      </div>
     </div>
   );
 }
