@@ -2,8 +2,9 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@/store";
 import { increment, decrement, addToNum } from "@/store/modules/counterStore";
 import { featchChannelList } from "@/store/modules/channelStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 // redux的使用练习
 export default function List() {
@@ -11,6 +12,8 @@ export default function List() {
   const { channelList } = useSelector((state: RootState) => state.channel);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [curDate, setCurDate] = useState(dayjs().format("YYYY-MM-DD HH:mm:ss"));
 
   useEffect(() => {
     dispatch(featchChannelList()); // 异步请求
@@ -21,6 +24,11 @@ export default function List() {
     id: "100",
     name: "Tom",
   });
+
+  const changeDate = () => {
+    const addDate = dayjs().add(1, "day").format("YYYY-MM-DD HH:mm:ss");
+    setCurDate(addDate);
+  };
 
   return (
     <div>
@@ -70,6 +78,11 @@ export default function List() {
         <p>---嵌套的子路由---</p>
         子路由: <Outlet />
       </div>
+
+      <div>
+        <button onClick={changeDate}>改变日期</button>
+      </div>
+      <div>{curDate}</div>
     </div>
   );
 }
