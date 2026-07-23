@@ -5,6 +5,13 @@ const request = axios.create({
   timeout: 10000,
 });
 
+// 请求拦截器 - 统一添加 token
+request.interceptors.request.use((config) => {
+  // 在请求头中添加 token
+  config.headers.Authorization = `Bearer ${localStorage.getItem("token-user")}`;
+  return config;
+});
+
 // 响应拦截器 - 统一处理返回数据
 request.interceptors.response.use(
   (response) => response.data, // 直接返回 data，调用处无需再 .data

@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@/store";
 import { increment, decrement, addToNum } from "@/store/modules/counterStore";
 import { featchChannelList } from "@/store/modules/channelStore";
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, memo, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import useStore from "@/store/zustand";
@@ -41,6 +41,8 @@ export default function List() {
     const addDate = dayjs().add(1, "day").format("YYYY-MM-DD HH:mm:ss");
     setCurDate(addDate);
   };
+
+  const domRef = useRef<HTMLDivElement>(null);
 
   return (
     <div>
@@ -107,6 +109,11 @@ export default function List() {
       <div>
         <p>---zustand---</p>
         {countIndex} - <button onClick={inc}>使用zustand 事件</button>
+      </div>
+
+      <div ref={domRef}>
+        <p>useRef 和 Ts</p>
+        <button onClick={() => console.log(domRef.current)}>获取 ref</button>
       </div>
     </div>
   );
