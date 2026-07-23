@@ -8,7 +8,10 @@ const request = axios.create({
 // 请求拦截器 - 统一添加 token
 request.interceptors.request.use((config) => {
   // 在请求头中添加 token
-  config.headers.Authorization = `Bearer ${localStorage.getItem("token-user")}`;
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 
